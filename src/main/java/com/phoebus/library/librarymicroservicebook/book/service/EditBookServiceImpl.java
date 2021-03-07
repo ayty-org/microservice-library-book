@@ -24,6 +24,7 @@ public class EditBookServiceImpl implements EditBookService {
         book.setPrice(bookDTO.getPrice());
         book.setQuantityAvailable(bookDTO.getQuantityAvailable());
         book.setCategory(bookDTO.getCategory());
+        book.setSpecificID(bookDTO.getSpecificID());
 
         repository.save(book);
 

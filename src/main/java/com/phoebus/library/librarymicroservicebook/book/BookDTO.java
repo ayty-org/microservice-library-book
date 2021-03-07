@@ -49,7 +49,7 @@ public class BookDTO {
     @NotNull
     private Set<CategoryOfBook> category;
     @NotNull
-    private UUID specificID = UUID.randomUUID();
+    private String specificID = UUID.randomUUID().toString();
 
 
 
