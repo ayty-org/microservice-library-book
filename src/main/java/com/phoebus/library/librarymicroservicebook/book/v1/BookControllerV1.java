@@ -3,6 +3,7 @@ package com.phoebus.library.librarymicroservicebook.book.v1;
 import com.phoebus.library.librarymicroservicebook.book.BookDTO;
 import com.phoebus.library.librarymicroservicebook.book.service.DeleteBookService;
 import com.phoebus.library.librarymicroservicebook.book.service.EditBookService;
+import com.phoebus.library.librarymicroservicebook.book.service.GetBookBySpecificIdService;
 import com.phoebus.library.librarymicroservicebook.book.service.GetBookService;
 import com.phoebus.library.librarymicroservicebook.book.service.ListAllBookByCategoryService;
 import com.phoebus.library.librarymicroservicebook.book.service.ListAllBookService;
@@ -36,6 +37,7 @@ public class BookControllerV1 {
     private final SaveBookService saveBookService;
     private final ListPageBookService listPageBookService;
     private final ListAllBookByCategoryService listAllBooksByCategory;
+    private final GetBookBySpecificIdService getBookBySpecificIdService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -59,6 +61,11 @@ public class BookControllerV1 {
     @ResponseStatus(HttpStatus.OK)
     public List<BookDTO> listAllByCategory(@PathVariable(value = "category") String category) {
         return listAllBooksByCategory.listByCategory(category);
+    }
+
+    @GetMapping(value = "/id/{specificID}") //list client by id
+    public BookDTO findSpecificID(@PathVariable(value = "specificID") String specificID) {
+        return BookDTO.from(getBookBySpecificIdService.findBySpecificID(specificID));
     }
 
     @GetMapping("/{id}")

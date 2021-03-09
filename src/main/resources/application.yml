@@ -8,6 +8,10 @@ eureka:
     fetch-registry: false
     eureka-server-connect-timeout-seconds: 3000
 spring:
+  profiles:
+    active: dev
+  application:
+    name: book-service
   datasource:
     url: jdbc:postgresql://localhost:5432/book-api
     username: postgres
