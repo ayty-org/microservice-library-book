@@ -2,6 +2,7 @@ package com.phoebus.library.librarymicroservicebook.book;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoebus.library.librarymicroservicebook.book.service.DeleteBookService;
 import com.phoebus.library.librarymicroservicebook.book.service.EditBookService;
+import com.phoebus.library.librarymicroservicebook.book.service.GetBookBySpecificIdService;
 import com.phoebus.library.librarymicroservicebook.book.service.GetBookService;
 import com.phoebus.library.librarymicroservicebook.book.service.ListAllBookByCategoryService;
 import com.phoebus.library.librarymicroservicebook.book.service.ListAllBookService;
@@ -34,12 +35,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.phoebus.library.librarymicroservicebook.book.builders.BookBuilder.createBook;
 import static com.phoebus.library.librarymicroservicebook.book.builders.BookBuilderDTO.createBookDTO;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -85,6 +88,9 @@ public class BookControllerV1Test {
 
     @MockBean
     private SaveBookService saveBookService;
+
+    @MockBean
+    private GetBookBySpecificIdService getBookBySpecificIdService;
 
     @Test
     @DisplayName("Test to verify if controller could do the task of delete when successful")
@@ -302,6 +308,27 @@ public class BookControllerV1Test {
                 .content(objectMapper.writeValueAsString(bookDTO)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Test to get a specific id of UserLibrary")
+    void shouldGetSpecificIdUserLibrary() throws Exception {
+        when(getBookBySpecificIdService.findBySpecificID(anyString())).thenReturn(createBook().build());
+
+        mockMvc.perform(get(URL_BOOK + "/id/{specificID}", "d2dbaa68-48c6-451e-b34f-57b5b70fc0ed").accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id",   is(1)))
+                .andExpect(jsonPath("$.title", is("teste book")))
+                .andExpect(jsonPath("$.synopsis", is("test")))
+                .andExpect(jsonPath("$.isbn", is("0000")))
+                .andExpect(jsonPath("$.author", is("teste")))
+                .andExpect(jsonPath("$.price", is(150.2)))
+                .andExpect(jsonPath("$.quantityAvailable", is(2)))
+                .andExpect(jsonPath("$.category.[0].id", is(1)))
+                .andExpect(jsonPath("$.category.[0].name", is("action")));
+
+        verify(getBookBySpecificIdService).findBySpecificID(anyString());
     }
 
     public static String readJson(String file) throws Exception {
